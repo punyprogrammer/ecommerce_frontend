@@ -5,6 +5,9 @@ const Container = styled.div`
   margin: 3px;
   height: 70vh;
   position: relative;
+  @media screen and (max-width: 400px) {
+    margin: 0px;
+  }
 `;
 const Image = styled.img`
   width: 100%;
@@ -13,6 +16,10 @@ const Image = styled.img`
   cursor: pointer;
   &:hover {
     filter: brightness(60%);
+  }
+  @media screen and (max-width: 400px) {
+    height: 30vh;
+    width: 100vw;
   }
 `;
 const Info = styled.div`
@@ -34,6 +41,11 @@ const Button = styled.button`
   border: none;
   padding: 10px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  &:hover {
+    transform: scale(1.08);
+    background-color: white;
+  }
 `;
 
 const CategoryItem = ({ category }) => {

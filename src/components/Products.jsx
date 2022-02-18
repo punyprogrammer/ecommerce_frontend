@@ -15,7 +15,7 @@ const Heading = styled.h1`
 const Products = () => {
   return (
     <>
-      <Heading>BEST SELLERS OF THE MONTH</Heading>
+      {/* <Heading>BEST SELLERS OF THE MONTH</Heading> */}
       <Container>
         {popularProducts.map((item) => (
           <SingleProduct product={item} key={item.id} />

@@ -7,6 +7,11 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 20px;
+  @media screen and (max-width: 400px) {
+    padding: 0px;
+    flex-direction: column;
+    margin: 0px;
+  }
 `;
 const Categories = () => {
   return (

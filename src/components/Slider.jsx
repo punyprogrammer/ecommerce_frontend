@@ -8,6 +8,9 @@ const Container = styled.div`
   height: 100vh;
   display: flex;
   overflow: hidden;
+  @media screen and (max-width: 400px) {
+    display: none;
+  }
 
   position: relative;
 `;

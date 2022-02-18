@@ -7,6 +7,9 @@ const Container = styled.div`
   color: white;
   padding: 6px;
   font-weight: 500;
+  @media screen and (max-width: 400px) {
+    font-size: 14px;
+  }
 `;
 const Announcement = () => {
   return (
