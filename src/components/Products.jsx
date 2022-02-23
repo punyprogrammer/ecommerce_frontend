@@ -22,8 +22,8 @@ const Products = ({ category, filters, sort }) => {
     try {
       const res = await axios.get(
         category
-          ? `http://localhost:5000/api/v1/product?category=${category}`
-          : `http://localhost:5000/api/v1/product`
+          ? `https://swag-sewa.herokuapp.com/api/v1/product?category=${category}`
+          : `https://swag-sewa.herokuapp.com/api/v1/product`
       );
       setProducts(res.data.data);
       setFilteredProducts(res.data.data);
