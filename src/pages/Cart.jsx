@@ -7,9 +7,13 @@ import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import { useSelector } from "react-redux";
 const Container = styled.div``;
 const Wrapper = styled.div`
   padding: 20px;
+  @media screen and (max-width: 400px) {
+    padding: 10px;
+  }
 `;
 const Title = styled.h1`
   font-weight: 300;
@@ -30,7 +34,11 @@ const TopButton = styled.button`
     props.type === "filled" ? "black" : "transparent"};
   color: ${(props) => props.type === "filled" && "white"};
 `;
-const TopTexts = styled.div``;
+const TopTexts = styled.div`
+  @media screen and (max-width: 400px) {
+    display: none;
+  }
+`;
 const TopText = styled.span`
   text-decoration: underline;
   cursor: pointer;
@@ -39,18 +47,31 @@ const TopText = styled.span`
 const Bottom = styled.div`
   display: flex;
   justify-content: space-between;
+  @media screen and (max-width: 400px) {
+    flex-direction: column;
+  }
 `;
 const Info = styled.div`
   flex: 3;
+  @media screen and (max-width: 400px) {
+    flex-direction: column;
+  }
 `;
 const Product = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+  @media screen and (max-width: 400px) {
+    flex-direction: column;
+  }
 `;
 const ProductDetail = styled.div`
   flex: 2;
   display: flex;
+  @media screen and (max-width: 400px) {
+    flex-direction: column;
+    text-align: center;
+  }
 `;
 const PriceDetail = styled.div`
   flex: 1;
@@ -61,6 +82,9 @@ const PriceDetail = styled.div`
 `;
 const Image = styled.img`
   width: 200px;
+  @media screen and (max-width: 400px) {
+    width: 90vw;
+  }
 `;
 const Details = styled.div`
   padding: 20px;
@@ -75,6 +99,9 @@ const ProductColor = styled.div`
   height: 20px;
   border-radius: 50%;
   background-color: ${(props) => props.bgColor};
+  @media screen and (max-width: 400px) {
+    margin: 0 auto;
+  }
 `;
 const ProductSize = styled.span`
   flex: 1;
@@ -99,15 +126,25 @@ const Summary = styled.div`
 `;
 const SummaryTitle = styled.h1`
   font-weight: 200;
+  @media screen and (max-width: 400px) {
+    text-align: center;
+  }
 `;
 const SummaryItem = styled.div`
   margin: 30px 0px;
   display: flex;
   justify-content: spaee-between;
   font-weight: ${(props) => props.type === "total" && "500"};
-  font-size: ${(props) => props.type ==="total" && "24px"};
+  font-size: ${(props) => props.type === "total" && "24px"};
+  @media screen and (max-width: 400px) {
+    text-align: center;
+  }
 `;
-const SummaryItemText = styled.span``;
+const SummaryItemText = styled.div`
+  @media screen and (max-width: 400px) {
+    text-align: center;
+  }
+`;
 const SummaryItemPrice = styled.span``;
 const SummaryButton = styled.button`
   width: 100%;
@@ -122,6 +159,8 @@ const SummaryButton = styled.button`
   }
 `;
 const Cart = () => {
+  const cart = useSelector((state) => state.cart);
+  console.log(cart);
   return (
     <Container>
       <Announcement />
@@ -138,62 +177,42 @@ const Cart = () => {
         </Top>
         <Bottom>
           <Info>
-            <Product>
-              <ProductDetail>
-                <Image src="https://assets.myntassets.com/f_webp,dpr_1.5,q_60,w_210,c_limit,fl_progressive/assets/images/14765134/2021/12/20/dca54348-921b-4968-9e6e-19878b00d8af1639996526164-Converse-Men-Casual-Shoes-441639996525744-1.jpg" />
-                <Details>
-                  <ProductName>
-                    <b>Product:</b> JESSIE THUNDER SHOES
-                  </ProductName>
-                  <ProductId>
-                    <b>ID:</b> 54698569
-                  </ProductId>
-                  <ProductColor bgColor="teal" />
-                  <ProductSize>
-                    <b>Size:</b> 37.5
-                  </ProductSize>
-                </Details>
-              </ProductDetail>
-              <PriceDetail>
-                <ProductAmountContainer>
-                  <AddCircleOutlineOutlined />
-                  <ProductAmount>2</ProductAmount>
-                  <RemoveCircleOutlineOutlined />
-                </ProductAmountContainer>
-                <ProductPrice>$678</ProductPrice>
-              </PriceDetail>
-            </Product>
-            <Product>
-              <ProductDetail>
-                <Image src="https://assets.myntassets.com/f_webp,dpr_1.5,q_60,w_210,c_limit,fl_progressive/assets/images/14765134/2021/12/20/dca54348-921b-4968-9e6e-19878b00d8af1639996526164-Converse-Men-Casual-Shoes-441639996525744-1.jpg" />
-                <Details>
-                  <ProductName>
-                    <b>Product:</b> JESSIE THUNDER SHOES
-                  </ProductName>
-                  <ProductId>
-                    <b>ID:</b> 54698569
-                  </ProductId>
-                  <ProductColor bgColor="teal" />
-                  <ProductSize>
-                    <b>Size:</b> 37.5
-                  </ProductSize>
-                </Details>
-              </ProductDetail>
-              <PriceDetail>
-                <ProductAmountContainer>
-                  <AddCircleOutlineOutlined />
-                  <ProductAmount>2</ProductAmount>
-                  <RemoveCircleOutlineOutlined />
-                </ProductAmountContainer>
-                <ProductPrice>$678</ProductPrice>
-              </PriceDetail>
-            </Product>
+            {cart.products.map((product) => (
+              <Product>
+                <ProductDetail>
+                  <Image src={product.img} />
+                  <Details>
+                    <ProductName>
+                      <b>Product:</b> {product.title}
+                    </ProductName>
+                    <ProductId>
+                      <b>ID:</b> {product._id}
+                    </ProductId>
+                    <ProductColor bgColor={product.colorSelected} />
+                    <ProductSize>
+                      <b>Size:</b>
+                      {product.size}
+                    </ProductSize>
+                  </Details>
+                </ProductDetail>
+                <PriceDetail>
+                  <ProductAmountContainer>
+                    <AddCircleOutlineOutlined />
+                    <ProductAmount>{product.quantity}</ProductAmount>
+                    <RemoveCircleOutlineOutlined />
+                  </ProductAmountContainer>
+                  <ProductPrice>
+                    ${product.quantity * product.price}
+                  </ProductPrice>
+                </PriceDetail>
+              </Product>
+            ))}
           </Info>
           <Summary>
             <SummaryTitle>ORDER SUMMARY</SummaryTitle>
             <SummaryItem>
               <SummaryItemText>SubTotal</SummaryItemText>
-              <SummaryItemPrice>$ 80</SummaryItemPrice>
+              <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem>
               <SummaryItemText>Estimated Shipping</SummaryItemText>
@@ -201,11 +220,11 @@ const Cart = () => {
             </SummaryItem>
             <SummaryItem>
               <SummaryItemText>Shipping Discount</SummaryItemText>
-              <SummaryItemPrice>$ -4.8</SummaryItemPrice>
+              <SummaryItemPrice>$ -5.9</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem type="total">
               <SummaryItemText>Total</SummaryItemText>
-              <SummaryItemPrice>$ 80</SummaryItemPrice>
+              <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
             </SummaryItem>
             <SummaryButton>CHECKOUT NOW</SummaryButton>
           </Summary>
