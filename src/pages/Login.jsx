@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { login } from "../redux/apiCalls";
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -55,6 +57,9 @@ const Button = styled.button`
     background-color: #1566b2;
     transform: scale(1.1);
   }
+  &:disabled{
+    cursor:not-allowed;
+  }
   margin: 20px auto;
 `;
 const LinkText = styled.div``;
@@ -67,17 +72,38 @@ const Link = styled.a`
     text-decoration: underline;
   }
 `;
+const ErrorMessage = styled.span`
+  color: red;
+`;
 
 const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const { isFetching, error, errorMessage } = useSelector(
+    (state) => state.user
+  );
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    login(dispatch, { username, password });
+  };
   return (
     <Container>
       <Wrapper>
         <Title>LOGIN </Title>
         <Form>
-          <Input placeholder="Enter email" />
-          <Input placeholder="Confirm Password" type="password" />
+          <Input
+            placeholder="Enter username"
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <Input
+            placeholder="Confirm Password"
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-          <Button>Login</Button>
+          <Button onClick={handleLogin}>Login</Button>
+          {error && <ErrorMessage>{errorMessage}</ErrorMessage>}
           <LinkText>
             Dont have an account?<Link>Register Here</Link>
           </LinkText>

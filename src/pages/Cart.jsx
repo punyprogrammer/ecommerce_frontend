@@ -2,12 +2,16 @@ import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
 } from "@mui/icons-material";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { useSelector } from "react-redux";
+import StripeCheckout from "react-stripe-checkout";
+import { publicRequest, userRequest } from "../requestMethods";
+import { useHistory } from "react-router-dom";
+const KEY = "pk_test_5cadjRFNC8GSVeUFBTp3bJQW00kOUrFl3P";
 const Container = styled.div``;
 const Wrapper = styled.div`
   padding: 20px;
@@ -160,7 +164,32 @@ const SummaryButton = styled.button`
 `;
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
-  console.log(cart);
+  const [stripeToken, setStripeToken] = useState(null);
+  const history = useHistory();
+  const onToken = (token) => {
+    setStripeToken(token);
+  };
+  //useEffect to trigger payment to backend server
+  useEffect(() => {
+    const makeRequest = async () => {
+      try {
+        const res = await userRequest.post("/checkout/payment", {
+          tokenId: stripeToken.id,
+          amount: 500,
+        },{
+          headers: {
+            'Authorization': `Bearer ${KEY}`
+          }
+
+        });
+        history.push("/success", {
+          stripeData: res.data,
+          products: cart, });
+      } catch {}
+    };
+    stripeToken && makeRequest();
+  }, [stripeToken, cart.total, history]);
+
   return (
     <Container>
       <Announcement />
@@ -170,7 +199,7 @@ const Cart = () => {
         <Top>
           <TopButton>CONTINUE SHOPPING</TopButton>
           <TopTexts>
-            <TopText>Shopping Cart(2)</TopText>
+            <TopText>Shopping Cart({cart.quantity})</TopText>
             <TopText>Your Wishlists(0)</TopText>
           </TopTexts>
           <TopButton type="filled">CHECKOUT NOW</TopButton>
@@ -226,7 +255,18 @@ const Cart = () => {
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
             </SummaryItem>
-            <SummaryButton>CHECKOUT NOW</SummaryButton>
+            <StripeCheckout
+              name="Swag Sewa"
+              image="https://user-images.githubusercontent.com/83149058/155345866-6cf1b78d-516a-4bc4-bf86-56eebbcabd8e.png"
+              billingAddress
+              shippingAddress
+              description={`Your cart total is ${cart.total}`}
+              amount={cart.total * 100}
+              stripeKey={KEY}
+              token={onToken}
+            >
+              <SummaryButton>CHECKOUT NOW</SummaryButton>
+            </StripeCheckout>
           </Summary>
         </Bottom>
       </Wrapper>
