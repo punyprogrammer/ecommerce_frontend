@@ -7,10 +7,11 @@ import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import { useSelector } from "react-redux";
+import UserLoginAlert from "../components/UserLoginAlert";
 import StripeCheckout from "react-stripe-checkout";
 import { publicRequest, userRequest } from "../requestMethods";
 import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 const KEY = "pk_test_5cadjRFNC8GSVeUFBTp3bJQW00kOUrFl3P";
 const Container = styled.div``;
 const Wrapper = styled.div`

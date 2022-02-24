@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import Badge from "@mui/material/Badge";
 import { mobile } from "../responsive";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import UserLoginAlert from "./UserLoginAlert";
+import { logoutUser } from "../redux/userRedux";
 
 const Container = styled.div`
   height: 60px;
@@ -69,6 +71,7 @@ const Right = styled.div`
     flex: 2;
   }
 `;
+const Div = styled.div``;
 const MenuItem = styled.div`
   font-size: 14px;
   cursor: pointer;
@@ -79,7 +82,23 @@ const MenuItem = styled.div`
 `;
 const Navbar = () => {
   const quantity = useSelector((state) => state.cart.quantity);
-  console.log(quantity);
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const [loginOpen, setLoginOpen] = useState(false);
+  const dispatch = useDispatch();
+  const handleLoginAlert = () => {
+    setLoginOpen(currentUser === null);
+  };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setLoginOpen(false);
+  };
+  const handleLogout = () => {
+    dispatch(logoutUser());
+  };
+
   return (
     <Container>
       <Wrapper>
@@ -96,22 +115,46 @@ const Navbar = () => {
           </Link>
         </Center>
         <Right>
-          <Link style={{ textDecoration: "none", color: "black" }} to="/login">
-            <MenuItem>SIGN IN </MenuItem>
-          </Link>
-          <Link
-            style={{ textDecoration: "none", color: "black" }}
-            to="/register"
-          >
-            <MenuItem>REGISTER</MenuItem>
-          </Link>
-          <Link style={{ textDecoration: "none", color: "black" }} to="/cart">
-            <MenuItem>
-              <Badge badgeContent={quantity} color="primary">
-                <ShoppingCartOutlinedIcon />
-              </Badge>
-            </MenuItem>
-          </Link>
+          {!currentUser && (
+            <Link
+              style={{ textDecoration: "none", color: "black" }}
+              to="/login"
+            >
+              <MenuItem>SIGN IN </MenuItem>
+            </Link>
+          )}
+
+          {!currentUser && (
+            <Link
+              style={{ textDecoration: "none", color: "black" }}
+              to="/register"
+            >
+              <MenuItem>REGISTER</MenuItem>
+            </Link>
+          )}
+          {currentUser && <MenuItem onClick={handleLogout}>LOGOUT </MenuItem>}
+          {currentUser && <MenuItem>ORDERS</MenuItem>}
+          <Div onClick={handleLoginAlert}>
+            <UserLoginAlert
+              open={loginOpen}
+              setOpen={setLoginOpen}
+              severity="error"
+              message="You must be logged-in to view the cart"
+              handleClose={handleClose}
+              vertical="top"
+              horizontal="right"
+            />
+            <Link
+              style={{ textDecoration: "none", color: "black" }}
+              to={currentUser && "/cart"}
+            >
+              <MenuItem>
+                <Badge badgeContent={quantity} color="primary">
+                  <ShoppingCartOutlinedIcon />
+                </Badge>
+              </MenuItem>
+            </Link>
+          </Div>
         </Right>
       </Wrapper>
     </Container>

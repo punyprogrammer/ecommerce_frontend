@@ -3,12 +3,13 @@ import Announcement from "../components/Announcement";
 import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
 import Footer from "../components/Footer";
+import UserLoginAlert from "../components/UserLoginAlert";
 import { Add, Remove } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { publicRequest } from "../requestMethods";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addProduct } from "../redux/cartRedux";
 const Container = styled.div``;
 const Wrapper = styled.div`
@@ -134,11 +135,14 @@ const Button = styled.button`
 const Product = () => {
   const location = useLocation();
   const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.currentUser);
   const productId = location.pathname.split("/")[2];
 
   const [product, setProduct] = useState();
   const [colorSelected, setColorSelected] = useState(null);
   const [size, setSize] = useState(null);
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [addedToCartOpen, setAddedToCartOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   //useEffect to fetch product
   const fetchProduct = async () => {
@@ -158,10 +162,34 @@ const Product = () => {
   };
   //function to add to cart
   const handleAddToCart = () => {
+    if (!currentUser) {
+      setLoginOpen(true);
+      return;
+    }
     //dispatch actions
     dispatch(addProduct({ ...product, quantity, size, colorSelected }));
+    setAddedToCartOpen(true);
     console.log("click");
   };
+  const handleClickAlert = () => {
+    setLoginOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setLoginOpen(false);
+  };
+  const handleAddToCartClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setAddedToCartOpen(false);
+  };
+
   useEffect(() => {
     fetchProduct();
   }, [productId]);
@@ -211,6 +239,24 @@ const Product = () => {
               />
             </AmountContainer>
             <Button onClick={handleAddToCart}>ADD TO CART</Button>
+            <UserLoginAlert
+              open={loginOpen}
+              setOpen={setLoginOpen}
+              severity="error"
+              message="You must be Logged-in to add to cart"
+              handleClose={handleClose}
+              vertical="bottom"
+              horizontal="center"
+            />
+            <UserLoginAlert
+              open={addedToCartOpen}
+              setOpen={setAddedToCartOpen}
+              severity="success"
+              message="Product added to cart"
+              handleClose={handleAddToCartClose}
+              vertical="bottom"
+              horizontal="center"
+            />
           </AddContainer>
         </InfoContainer>
       </Wrapper>
